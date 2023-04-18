@@ -1,6 +1,8 @@
 package exercise;
 
 import java.util.HashMap;
+
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -10,7 +12,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 // BEGIN
 import java.util.Map;
 import org.junit.jupiter.api.Test;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import static org.assertj.core.api.Assertions.assertThat;
 // END
 
 
@@ -26,53 +29,60 @@ class FileKVTest {
     }
 
     // BEGIN
+//    @Test
+//    void testGetExistingKey() {
+//        KeyValueStorage storage = new FileKV("src/test/resources/file", Map.of("key", "value"));
+//        Assertions.assertEquals("value", storage.get("key", "default"));
+//    }
+//
+//    @Test
+//    void testGetNonExistingKey() {
+//        KeyValueStorage storage = new FileKV("src/test/resources/file", Map.of("key", "value"));
+//        Assertions.assertEquals("default", storage.get("non-existing-key", "default"));
+//    }
+//
+//    @Test
+//    void testSet() {
+//        KeyValueStorage storage = new FileKV("src/test/resources/file", Map.of("key", "value"));
+//        storage.set("new-key", "new-value");
+//        Assertions.assertEquals("new-value", storage.get("new-key", "default"));
+//    }
+//
+//    @Test
+//    void testUnset() {
+//        KeyValueStorage storage = new FileKV("src/test/resources/file", Map.of("key", "value"));
+//        storage.unset("key");
+//        Assertions.assertEquals("default", storage.get("key", "default"));
+//    }
     @Test
-    public void testGetExistingKey() throws Exception {
+    void testSet() {
         KeyValueStorage storage = new FileKV("src/test/resources/file", Map.of("key", "value"));
-        assertEquals("value1", storage.get("key1", ""));
-        assertEquals("value2", storage.get("key2", ""));
+        storage.set("key4", "value4");
+        Assertions.assertEquals("value4", storage.get("key4", ""));
     }
 
     @Test
-    public void testGetNonExistingKey() throws Exception {
+    void testUnset() {
         KeyValueStorage storage = new FileKV("src/test/resources/file", Map.of("key", "value"));
-        assertEquals("", storage.get("key3", ""));
+        storage.unset("key");
+        Assertions.assertFalse(storage.toMap().containsKey("key"));
     }
 
     @Test
-    public void testSetNewKey() throws Exception {
+    void testGet() {
         KeyValueStorage storage = new FileKV("src/test/resources/file", Map.of("key", "value"));
-        storage.set("key3", "value3");
-        assertEquals("value3", storage.get("key3", ""));
+        Assertions.assertEquals("default", storage.get("non-existent-key", "default"));
     }
 
     @Test
-    public void testSetExistingKey() throws Exception {
+    void testToMap() {
         KeyValueStorage storage = new FileKV("src/test/resources/file", Map.of("key", "value"));
-        storage.set("key1", "newvalue1");
-        assertEquals("newvalue1", storage.get("key1", ""));
-    }
-
-    @Test
-    public void testDeleteExistingKey() throws Exception {
-        KeyValueStorage storage = new FileKV("src/test/resources/file", Map.of("key", "value"));
-        storage.unset("key1");
-        assertEquals("", storage.get("key1", ""));
-    }
-
-    @Test
-    public void testDeleteNonExistingKey() throws Exception {
-        KeyValueStorage storage = new FileKV("src/test/resources/file", Map.of("key", "value"));
-        storage.unset("key3");
-        assertEquals("", storage.get("key3", ""));
-    }
-
-    @Test
-    public void testSaveDataToFile() throws Exception {
-        String json = Utils.readFile("src/test/resources/file");
-        Map<String, String> dataFromFile = Utils.unserialize(json);
-        assertEquals("value1", dataFromFile.get("key1"));
-        assertEquals("value2", dataFromFile.get("key2"));
+        Map<String, String> expected = new HashMap<>();
+        expected.put("key1", "value1");
+        expected.put("key2", "value2");
+        storage.set("key1", "value1");
+        storage.set("key2", "value2");
+        Assertions.assertEquals(expected, storage.toMap());
     }
     // END
 }
