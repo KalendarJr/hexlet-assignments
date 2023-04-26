@@ -10,7 +10,7 @@ public class SingleTag extends Tag {
 
     @Override
     public String toString() {
-        return "<" + nameTag + attributesToString() + ">";
+        return attributesToString();
     }
 }
 // END

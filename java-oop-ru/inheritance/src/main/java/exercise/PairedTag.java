@@ -14,20 +14,15 @@ public class PairedTag extends Tag {
         this.bodyTag = bodyTag;
         this.children = children;
     }
-
     @Override
     public String toString() {
-        StringBuilder result = new StringBuilder();
-        result.append("<").append(nameTag).append(attributesToString()).append(">");
-        if (!bodyTag.isEmpty()) {
-            result.append(bodyTag);
-        } else {
-            for (Tag child : children) {
-                result.append(child.toString());
-            }
-        }
-        result.append("</").append(nameTag).append(">");
-        return result.toString();
+        String attrs = getAttributes().entrySet().stream()
+                .map(e -> e.getKey() + "=\"" + e.getValue() + "\"")
+                .collect(Collectors.joining(" "));
+        String childrenStr = children.stream()
+                .map(Tag::toString)
+                .collect(Collectors.joining(""));
+        return "<" + getName() + (attrs.isEmpty() ? "" : " " + attrs) + ">" + bodyTag + childrenStr + "</" + getName() + ">";
     }
 }
 // END

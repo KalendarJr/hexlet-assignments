@@ -13,12 +13,19 @@ public abstract class Tag {
         this.attributeTag = attributeTag;
     }
 
-    protected String attributesToString() {
-        StringBuilder result = new StringBuilder();
-        for (Map.Entry<String, String> attribute : attributeTag.entrySet()) {
-            result.append(" ").append(attribute.getKey()).append("=\"").append(attribute.getValue()).append("\"");
-        }
-        return result.toString();
+    public String getName() {
+        return nameTag;
+    }
+
+    public Map<String, String> getAttributes() {
+        return attributeTag;
+    }
+
+    public String attributesToString() {
+        String attrs = attributeTag.entrySet().stream()
+                .map(e -> e.getKey() + "=\"" + e.getValue() + "\"")
+                .collect(Collectors.joining(" "));
+        return "<" + nameTag + (attrs.isEmpty() ? "" : " " + attrs) + ">";
     }
 
     public abstract String toString();
